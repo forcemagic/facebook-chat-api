@@ -5,3 +5,6 @@ test-bot-config.json
 
 test/test-config.json
 test/test-appstate.json
+
+# JSDOC output
+out/
