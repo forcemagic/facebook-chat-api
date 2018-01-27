@@ -431,6 +431,20 @@ function loginHelper(appState, email, password, globalOptions, callback) {
     });
 }
 
+/**
+ * This function is returned by <code>require()</code> and is the main entry point to the API
+ * @param  {Object}         loginData This contains <code>email</code> and <code>password</code> <b>or</b> the <code>appState</code> used to log in to Facebook
+ * @param  {Object}         options   Options for the api (see below)
+ * @param  {loginCallback}  callback  Called after the login logic (no matter the result)
+ * @example
+ * const login = require("facebook-chat-api");
+ *
+ * login({email: "FB_EMAIL", password: "FB_PASSWORD"}, (err, api) => {
+ *     if(err) return console.error(err);
+ *     // Here you can use the api
+ * });
+ * @see api.setOptions
+ */
 function login(loginData, options, callback) {
   if(utils.getType(options) === 'Function' || utils.getType(options) === 'AsyncFunction') {
     callback = options;
@@ -451,3 +465,9 @@ function login(loginData, options, callback) {
 }
 
 module.exports = login;
+
+/**
+ * @callback loginCallback
+ * @param {Exception}   err If an error occurred, this variable will contain the dump.
+ * @param {Object}      api
+ */
