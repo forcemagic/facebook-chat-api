@@ -2,6 +2,7 @@
 
 /**
  * @module login
+ * @requires utils
  * @license MIT
  */
 
@@ -13,7 +14,7 @@ var defaultLogRecordSize = 100;
 log.maxRecordSize = defaultLogRecordSize;
 
 /**
- * Parse <code>options</code> object
+ * Parse the <code>options</code> object
  * @private
  * @param {object} globalOptions The object to store options in
  * @param {ApiOptions} options   The object that we got as input
@@ -51,6 +52,15 @@ function setOptions(globalOptions, options) {
   });
 }
 
+/**
+ * Build the API.
+ * @private
+ * @param  {object}             globalOptions   See {@link module:login~setOptions}
+ * @param  {string}             html            Passed to utils.makeDefaults
+ * @param  {tough.CookieJar}    jar             The current cookie jar
+ * @return {ApiBaseArray}                       Basic functions and data available to all functions
+ * @todo Link utils.makeDefaults
+ */
 function buildAPI(globalOptions, html, jar) {
   var maybeCookie = jar.getCookies("https://www.facebook.com").filter(function(val) {
     return val.cookieString().split("=")[0] === "c_user";
@@ -133,6 +143,15 @@ function buildAPI(globalOptions, html, jar) {
   return [ctx, defaultFuncs, api];
 }
 
+/**
+ * "Makes" the login (happen)
+ * @param  {tough.CookieJar}    jar             The current cookie jar
+ * @param  {string}             email           Email extracted from {@link LoginData}
+ * @param  {string}             password        Password extracted from {@link LoginData}
+ * @param  {ApiOptions}         loginOptions    Options for the api
+ * @param  {loginCallback}      callback        Called after the login logic (every time, even on failure)
+ * @return {function}                           Called with the login page's result
+ */
 function makeLogin(jar, email, password, loginOptions, callback) {
   return function(res) {
     var html = res.body;
@@ -296,7 +315,7 @@ function makeLogin(jar, email, password, loginOptions, callback) {
  * @param  {object}         appState      Application state (if present)
  * @param  {string}         email         Email extracted from {@link LoginData}
  * @param  {string}         password      Password extracted from {@link LoginData}
- * @param  {object}         globalOptions Options object (see {@link module:login})
+ * @param  {object}         globalOptions Options object (see {@link module:login~setOptions})
  * @param  {loginCallback}  callback      Called after the login logic (every time, even on failure)
  */
 function loginHelper(appState, email, password, globalOptions, callback) {
@@ -483,7 +502,7 @@ function login(loginData, options, callback) {
 /**
  * This function is returned by <code>require()</code> and is the main entry point to the API
  * @param  {LoginData}      loginData This contains <code>email</code> and <code>password</code> <b>or</b> the <code>appState</code> used to log in to Facebook
- * @param  {object}         options   Options for the api (see below)
+ * @param  {ApiOptions}     options   Options for the api
  * @param  {loginCallback}  callback  Called after the login logic (every time, even on failure)
  * @example
  * const login = require("facebook-chat-api");
@@ -515,8 +534,18 @@ module.exports = login;
  * @desc The home for all config options
  * @property {string=} logLevel                 Npmlog level. Can be <code>silly, verbose, info, http, warn, error or silent</code>
  * @property {boolean} [selfListen=false]       Should the api listen to events coming from its account?
- * @property {boolean} [listenEvents=false]     Make {@link api.listen} listen to "event" event
+ * @property {boolean} [listenEvents=false]     Make {@link api.listen} listen to "event" events
  * @property {string=} pageID                   Log in as pageID. This means that the api can only send and receive messages
  *                                              as that page.
- * @property {boolean} [updatePresence=false]   
+ * @property {boolean} [updatePresence=false]   Make {@link api.listen} listen to "presence" events
+ * @property {boolean} [forceLogin=false]       Automatically approve (all) recent logins when prompted
+ */
+/**
+ * @typedef ApiBaseArray
+ * @type {array}
+ * @desc This array is passed to every api call.
+ * @property {object} ctx           Context. Data available to the api's functions.
+ * @property {object} defaultFuncs  Default functions.
+ * @property {object} api           The api.
+ * @todo Expand defaultFuncs and api
  */
