@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @module utils
+ * @license MIT
+ */
+
 var bluebird = require("bluebird");
 var request = bluebird.promisify(require("request").defaults({jar: true}));
 var stream = require('stream');
@@ -18,12 +23,27 @@ function getHeaders(url) {
   return headers;
 }
 
+/**
+ * Checks whether <code>obj</code> is a readable stream.
+ * @protected
+ * @param   {mixed}     obj The object to check
+ * @return  {Boolean}
+ */
 function isReadableStream(obj) {
   return obj instanceof stream.Stream &&
     (getType(obj._read) === 'Function' || getType(obj._read) === 'AsyncFunction') &&
     getType(obj._readableState) === 'Object';
 }
 
+/**
+ * Issues a GET request.
+ * @protected
+ * @param  {string}             url The URL to query
+ * @param  {tough.CookieJar}    jar The cookie jar to use
+ * @param  {string}             qs  Query string to include with the request
+ * @return {promise}                The promise that <code>request</code> returned to us
+ * @todo Verify return value
+ */
 function get(url, jar, qs) {
   // I'm still confused about this
   if(getType(qs) === "Object") {
@@ -46,6 +66,15 @@ function get(url, jar, qs) {
   return request(op).then(function(res) {return res[0];});
 }
 
+/**
+ * Issues a POST request
+ * @protected
+ * @param  {string}             url     The URL to query
+ * @param  {tough.CookieJar}    jar     The cookie jar to use
+ * @param  {object}             form    The form to include with the request
+ * @return {promise}                    The promise that <code>request</code> returned to us
+ * @todo Verify return value
+ */
 function post(url, jar, form) {
   var op = {
     headers: getHeaders(url),
@@ -60,6 +89,15 @@ function post(url, jar, form) {
   return request(op).then(function(res) {return res[0];});
 }
 
+/**
+ * Issues a multipart/form-data request
+ * @protected
+ * @param  {string}             url     The URL to query
+ * @param  {tough.CookieJar}    jar     The cookie jar to use
+ * @param  {object}             form    The form data to include with the request
+ * @return {promise}                    The promise that <code>request</code> returned to us
+ * @todo Verify return value
+ */
 function postFormData(url, jar, form, qs) {
   var headers = getHeaders(url);
   headers['Content-Type'] = 'multipart/form-data';
