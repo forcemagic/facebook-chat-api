@@ -10,6 +10,12 @@ var request = bluebird.promisify(require("request").defaults({ jar: true }));
 var stream = require("stream");
 var log = require("npmlog");
 
+/**
+ * Request a predefined header object to send to requests.
+ * @protected
+ * @param  {string} url The url to extract the Host header from
+ * @return {object}     The <code>headers</code> object
+ */
 function getHeaders(url) {
   var headers = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -125,6 +131,12 @@ function postFormData(url, jar, form, qs) {
   });
 }
 
+/**
+ * Pads <code>val</code> with zeros to make it <code>len</code> long.
+ * @param  {string} val The string to pad
+ * @param  {int}    len The new length of the string
+ * @return {string}     The padded string
+ */
 function padZeros(val, len) {
   val = String(val);
   len = len || 2;

@@ -3,7 +3,15 @@
 var utils = require("../utils");
 var log = require("npmlog");
 
-module.exports = function(defaultFuncs, api, ctx) {
+/** @module api */
+module.exports = logout;
+
+/**
+ * Logs you out.
+ * @param  {logoutCallback} callback    Callback called when the function is complete.
+ * @todo Fixup this separation
+ */
+function logout(defaultFuncs, api, ctx) {
   return function logout(callback) {
     callback = callback || function() {};
 
@@ -57,3 +65,8 @@ module.exports = function(defaultFuncs, api, ctx) {
       });
   };
 };
+
+/**
+ * @callback logoutCallback
+ * @param {object} err Present only when an error occurs, contains details about the error.
+ */

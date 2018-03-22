@@ -3,6 +3,16 @@
 var utils = require("../utils");
 var log = require("npmlog");
 
+/**
+ * Sets the title of the group chat with thread id <code>threadID</code> to <code>newTitle</code>.
+ * @function
+ * @name setTitle
+ * @param {string}              newTitle The new title of the chat
+ * @param {mixed}               threadID The thread ID representing the target chat
+ *                                       (Can be an integer or a string)
+ * @param {setTitleCallback}    callback Callback called when the function is complete.
+ * @memberof module:api
+ */
 module.exports = function(defaultFuncs, api, ctx) {
   return function setTitle(newTitle, threadID, callback) {
     if (
@@ -70,3 +80,9 @@ module.exports = function(defaultFuncs, api, ctx) {
       });
   };
 };
+
+/**
+ * @callback setTitleCallback
+ * @param {object} err Present only when an error occurs, contains details about the error.
+ * @param {object} obj Only contains the threadID where the change happened.
+ */
