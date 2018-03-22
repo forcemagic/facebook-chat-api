@@ -144,7 +144,8 @@ function buildAPI(globalOptions, html, jar) {
 }
 
 /**
- * "Makes" the login (happen)
+ * Makes the login (happen)
+ * @private
  * @param  {tough.CookieJar}    jar             The current cookie jar
  * @param  {string}             email           Email extracted from {@link LoginData}
  * @param  {string}             password        Password extracted from {@link LoginData}
@@ -542,6 +543,7 @@ module.exports = login;
  */
 /**
  * @typedef ApiBaseArray
+ * @private
  * @type {array}
  * @desc This array is passed to every api call.
  * @property {object} ctx           Context. Data available to the api's functions.

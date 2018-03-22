@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node_modules/.bin/mocha",
     "start": "node server.js",
+    "gendocs": "jsdoc --configure .jsdoc.json --verbose",
     "prettier": "prettier utils.js src/* --write"
   },
   "repository": {
@@ -32,6 +33,8 @@
     "node": ">=4.x"
   },
   "devDependencies": {
+    "jsdoc": "^3.5.5",
+    "minami": "^1.2.3",
     "mocha": "^2.2.5"
   }
 }
