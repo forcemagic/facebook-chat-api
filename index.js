@@ -519,7 +519,11 @@ module.exports = login;
 /**
  * @callback loginCallback
  * @param {Exception}   err If an error occurred, this variable will contain its details
- * @param {api}         api If there's no error, you can access the api from this variable
+ * @param {module:api}  api If there's no error, you can access the api from this variable
+ */
+/**
+ * @callback simpleErrorCallback
+ * @param {Exception}   err If an error occurred, this variable will contain its details
  */
 /**
  * @typedef LoginData
@@ -545,9 +549,10 @@ module.exports = login;
  * @typedef ApiBaseArray
  * @private
  * @type {array}
- * @desc This array is passed to every api call.
+ * @desc This object is passed to every api call.
  * @property {object} ctx           Context. Data available to the api's functions.
  * @property {object} defaultFuncs  Default functions.
  * @property {object} api           The api.
  * @todo Expand defaultFuncs and api
  */
+/** @module api */

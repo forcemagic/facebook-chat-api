@@ -8,8 +8,7 @@ var log = require("npmlog");
  * @function
  * @name setTitle
  * @param {string}              newTitle The new title of the chat
- * @param {mixed}               threadID The thread ID representing the target chat
- *                                       (Can be an integer or a string)
+ * @param {string|number}       threadID The thread ID representing the target chat
  * @param {setTitleCallback}    callback Callback called when the function is complete.
  * @memberof module:api
  */

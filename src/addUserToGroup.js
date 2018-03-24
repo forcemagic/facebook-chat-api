@@ -3,6 +3,15 @@
 var utils = require("../utils");
 var log = require("npmlog");
 
+/**
+ * Adds a user (or array of users) to a group chat.
+ * @function
+ * @name addUserToGroup
+ * @param {string|string[]|number|number[]}     userID      User ID or array of user IDs
+ * @param {string|number}                       threadID    Group chat ID
+ * @param {simpleErrorCallback}                 callback    Callback called when the query is done
+ * @memberof module:api
+ */
 module.exports = function(defaultFuncs, api, ctx) {
   return function addUserToGroup(userID, threadID, callback) {
     if (
