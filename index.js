@@ -1,5 +1,11 @@
 "use strict";
 
+/**
+ * @module login
+ * @requires utils
+ * @license MIT
+ */
+
 var utils = require("./utils");
 var cheerio = require("cheerio");
 var log = require("npmlog");
@@ -7,6 +13,12 @@ var log = require("npmlog");
 var defaultLogRecordSize = 100;
 log.maxRecordSize = defaultLogRecordSize;
 
+/**
+ * Parse the <code>options</code> object
+ * @private
+ * @param {object} globalOptions The object to store options in
+ * @param {ApiOptions} options   The object that we got as input
+ */
 function setOptions(globalOptions, options) {
   Object.keys(options).map(function(key) {
     switch (key) {
@@ -40,6 +52,15 @@ function setOptions(globalOptions, options) {
   });
 }
 
+/**
+ * Build the API.
+ * @private
+ * @param  {object}             globalOptions   See {@link module:login~setOptions}
+ * @param  {string}             html            Passed to utils.makeDefaults
+ * @param  {tough.CookieJar}    jar             The current cookie jar
+ * @return {ApiBaseArray}                       Basic functions and data available to all functions
+ * @todo Link utils.makeDefaults
+ */
 function buildAPI(globalOptions, html, jar) {
   var maybeCookie = jar.getCookies("https://www.facebook.com").filter(function(val) {
     return val.cookieString().split("=")[0] === "c_user";
@@ -122,6 +143,16 @@ function buildAPI(globalOptions, html, jar) {
   return [ctx, defaultFuncs, api];
 }
 
+/**
+ * Makes the login (happen)
+ * @private
+ * @param  {tough.CookieJar}    jar             The current cookie jar
+ * @param  {string}             email           Email extracted from {@link LoginData}
+ * @param  {string}             password        Password extracted from {@link LoginData}
+ * @param  {ApiOptions}         loginOptions    Options for the api
+ * @param  {loginCallback}      callback        Called after the login logic (every time, even on failure)
+ * @return {function}                           Called with the login page's result
+ */
 function makeLogin(jar, email, password, loginOptions, callback) {
   return function(res) {
     var html = res.body;
@@ -279,7 +310,15 @@ function makeLogin(jar, email, password, loginOptions, callback) {
   };
 }
 
-// Helps the login
+/**
+ * Helps the login and calls the callback depending on the login's success.
+ * @private
+ * @param  {object}         appState      Application state (if present)
+ * @param  {string}         email         Email extracted from {@link LoginData}
+ * @param  {string}         password      Password extracted from {@link LoginData}
+ * @param  {object}         globalOptions Options object (see {@link module:login~setOptions})
+ * @param  {loginCallback}  callback      Called after the login logic (every time, even on failure)
+ */
 function loginHelper(appState, email, password, globalOptions, callback) {
   var mainPromise = null;
   var jar = utils.getJar();
@@ -461,4 +500,59 @@ function login(loginData, options, callback) {
   loginHelper(loginData.appState, loginData.email, loginData.password, globalOptions, callback);
 }
 
+/**
+ * This function is returned by <code>require()</code> and is the main entry point to the API
+ * @param  {LoginData}      loginData This contains <code>email</code> and <code>password</code> <b>or</b> the <code>appState</code> used to log in to Facebook
+ * @param  {ApiOptions}     options   Options for the api
+ * @param  {loginCallback}  callback  Called after the login logic (every time, even on failure)
+ * @example
+ * const login = require("facebook-chat-api");
+ *
+ * login({email: "FB_EMAIL", password: "FB_PASSWORD"}, (err, api) => {
+ *     if(err) return console.error(err);
+ *     // Here you can use the api
+ * });
+ * @todo Include [at]see api.setOptions
+ */
 module.exports = login;
+
+/**
+ * @callback loginCallback
+ * @param {Exception}   err If an error occurred, this variable will contain its details
+ * @param {module:api}  api If there's no error, you can access the api from this variable
+ */
+/**
+ * @callback simpleErrorCallback
+ * @param {Exception}   err If an error occurred, this variable will contain its details
+ */
+/**
+ * @typedef LoginData
+ * @type {object}
+ * @desc Either the <code>email</code> & <code>password</code> pair or the <code>appState</code> has to exist.
+ * @property {string=} email    Your Facebook email
+ * @property {string=} password Your Facebook password
+ * @property {object=} appState Application state {@link api.getAppState}
+ */
+/**
+ * @typedef ApiOptions
+ * @type {object}
+ * @desc The home for all config options
+ * @property {string=} logLevel                 Npmlog level. Can be <code>silly, verbose, info, http, warn, error or silent</code>
+ * @property {boolean} [selfListen=false]       Should the api listen to events coming from its account?
+ * @property {boolean} [listenEvents=false]     Make {@link api.listen} listen to "event" events
+ * @property {string=} pageID                   Log in as pageID. This means that the api can only send and receive messages
+ *                                              as that page.
+ * @property {boolean} [updatePresence=false]   Make {@link api.listen} listen to "presence" events
+ * @property {boolean} [forceLogin=false]       Automatically approve (all) recent logins when prompted
+ */
+/**
+ * @typedef ApiBaseArray
+ * @private
+ * @type {array}
+ * @desc This object is passed to every api call.
+ * @property {object} ctx           Context. Data available to the api's functions.
+ * @property {object} defaultFuncs  Default functions.
+ * @property {object} api           The api.
+ * @todo Expand defaultFuncs and api
+ */
+/** @module api */

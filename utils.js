@@ -1,10 +1,21 @@
 "use strict";
 
+/**
+ * @module utils
+ * @license MIT
+ */
+
 var bluebird = require("bluebird");
 var request = bluebird.promisify(require("request").defaults({ jar: true }));
 var stream = require("stream");
 var log = require("npmlog");
 
+/**
+ * Request a predefined header object to send to requests.
+ * @protected
+ * @param  {string} url The url to extract the Host header from
+ * @return {object}     The <code>headers</code> object
+ */
 function getHeaders(url) {
   var headers = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -19,6 +30,12 @@ function getHeaders(url) {
   return headers;
 }
 
+/**
+ * Checks whether <code>obj</code> is a readable stream.
+ * @protected
+ * @param   {mixed}     obj The object to check
+ * @return  {Boolean}
+ */
 function isReadableStream(obj) {
   return (
     obj instanceof stream.Stream &&
@@ -28,6 +45,15 @@ function isReadableStream(obj) {
   );
 }
 
+/**
+ * Issues a GET request.
+ * @protected
+ * @param  {string}             url The URL to query
+ * @param  {tough.CookieJar}    jar The cookie jar to use
+ * @param  {string}             qs  Query string to include with the request
+ * @return {promise}                The promise that <code>request</code> returned to us
+ * @todo Verify return value
+ */
 function get(url, jar, qs) {
   // I'm still confused about this
   if (getType(qs) === "Object") {
@@ -52,6 +78,15 @@ function get(url, jar, qs) {
   });
 }
 
+/**
+ * Issues a POST request
+ * @protected
+ * @param  {string}             url     The URL to query
+ * @param  {tough.CookieJar}    jar     The cookie jar to use
+ * @param  {object}             form    The form to include with the request
+ * @return {promise}                    The promise that <code>request</code> returned to us
+ * @todo Verify return value
+ */
 function post(url, jar, form) {
   var op = {
     headers: getHeaders(url),
@@ -68,6 +103,15 @@ function post(url, jar, form) {
   });
 }
 
+/**
+ * Issues a multipart/form-data request
+ * @protected
+ * @param  {string}             url     The URL to query
+ * @param  {tough.CookieJar}    jar     The cookie jar to use
+ * @param  {object}             form    The form data to include with the request
+ * @return {promise}                    The promise that <code>request</code> returned to us
+ * @todo Verify return value
+ */
 function postFormData(url, jar, form, qs) {
   var headers = getHeaders(url);
   headers["Content-Type"] = "multipart/form-data";
@@ -87,6 +131,12 @@ function postFormData(url, jar, form, qs) {
   });
 }
 
+/**
+ * Pads <code>val</code> with zeros to make it <code>len</code> long.
+ * @param  {string} val The string to pad
+ * @param  {int}    len The new length of the string
+ * @return {string}     The padded string
+ */
 function padZeros(val, len) {
   val = String(val);
   len = len || 2;

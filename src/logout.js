@@ -3,7 +3,14 @@
 var utils = require("../utils");
 var log = require("npmlog");
 
-module.exports = function(defaultFuncs, api, ctx) {
+/**
+ * Logs the current user out.
+ * @function
+ * @name logout
+ * @param {simpleErrorCallback} callback    Callback called when the function is complete.
+ * @memberof module:api
+ */
+module.exports = function (defaultFuncs, api, ctx) {
   return function logout(callback) {
     callback = callback || function() {};
 
